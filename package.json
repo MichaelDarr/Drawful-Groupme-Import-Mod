@@ -1,0 +1,24 @@
+{
+  "name": "groupme-drawful-mod",
+  "version": "1.0.0",
+  "description": "scrapes a groupme chat for messages and creates a file format compatable with drawful",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MichaelDarr/Groupme-Drawful-Mod.git"
+  },
+  "author": "Michael Darr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MichaelDarr/Groupme-Drawful-Mod/issues"
+  },
+  "homepage": "https://github.com/MichaelDarr/Groupme-Drawful-Mod#readme"
+}
