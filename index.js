@@ -1,9 +1,24 @@
 require('dotenv').config()
 
-const axios = require('axios')
+const axios           = require('axios')
+    , punycode        = require('punycode')
+    , unicode         = require('unicode/category/So')
+    , fs              = require('fs')
+    , {promisify}     = require('util')
+    , writeFileAsync  = promisify(fs.writeFile)
 
-// main function
-async function getMessages() {
+async function main() {
+
+  var prompts = await getAllMessages()
+
+  var drawfulEncodedObject = drawfulEncode(prompts)
+
+  writePromptsToFile(drawfulEncodedObject)
+}
+
+async function getAllMessages() {
+
+  console.log('Beginning message scrape')
 
   var finalPromptArr    = []
     , before_id         = null
@@ -13,7 +28,7 @@ async function getMessages() {
 
   do {
 
-    finalPromptArr = parseMessages(unparsedMessages, finalPromptArr)
+    parseMessages(unparsedMessages, finalPromptArr)
 
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
@@ -25,8 +40,9 @@ async function getMessages() {
 
   } while(unparsedMessages)
 
-  console.log('\n\nSuccess! Here are your ' + finalPromptArr.length + ' prompts:')
-  console.log(finalPromptArr)
+  console.log('\nMessage scrape complete\n')
+
+  return finalPromptArr
 }
 
 async function makeMessageRequest(before_id) {
@@ -51,15 +67,43 @@ async function makeMessageRequest(before_id) {
 
 function parseMessages(unparsedMessages, finalPromptArr) {
 
-  for(var i = 0; i < unparsedMessages.length; i++) {
+  for(var i = 0; i < unparsedMessages.length - 1; i++) {
     if(finalPromptArr.indexOf(unparsedMessages[i].text) > -1) continue
 
     finalPromptArr.push(unparsedMessages[i].text)
   }
-
-  return finalPromptArr
 }
 
-console.log('\n\nGroupme Drawful Mod v1. By Michael Darr.\n\n')
-console.log('Beginning message scrape...')
-getMessages()
+function drawfulEncode(prompts) {
+  var drawfulEncodedObject =
+    { episodeid : 1209
+    , items     : []
+    }
+
+  for(var i = 0; i < prompts.length; i++) {
+    drawfulEncodedObject.items.push(
+      { id    : 10000 + i
+      , text  : prompts[i]
+      }
+    )
+  }
+
+  return drawfulEncodedObject
+}
+
+async function writePromptsToFile(drawfulEncodedObject) {
+
+  console.log('Writing new prompts to Drawful data file')
+
+  try {
+    await writeFileAsync(process.env.DRAWFUL_UNPACKED_ARCHIVE_PATH + '/games/Drawful/content/prompts.jet', JSON.stringify(drawfulEncodedObject, null, 0), 'utf-8')
+    console.log('Completed file writing process')
+  } catch {
+    console.log('file write failed. Make sure you have an extracted copy of assets.bin in the "assets" folder')
+    process.exit()
+  }
+}
+
+console.log('\x1b[35m', '\n\nGroupme Drawful Mod v1, by Michael Darr.\n')
+console.log('\x1b[0m')
+main()
