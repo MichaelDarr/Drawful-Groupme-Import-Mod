@@ -47,4 +47,4 @@
 
 8. Now that we've done all the setup, we need to run the program. Go back to the command line from step 2. Make sure you are in the directory where you cloned this repo. Run the command `npm start` and you should see some progress text that ultimately culminates in a message of "Modification successful!"
 
-9. Go back to steam and launch the Jackbox Party Pack. If everything went well, it won't crash and you will have modified your Drawful prompts to mirror your groupchat!
+9. Go back to steam and launch the Jackbox Party Pack. If everything went well, it won't crash and you will have modified your Drawful prompts to mirror your groupchat! If you ever want to update the prompts to include new messages, just navigate to the directory again and re-run `npm start`.
