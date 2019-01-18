@@ -9,10 +9,15 @@ async function getMessages() {
     , before_id         = null
     , unparsedMessages  = await makeMessageRequest()
 
+  process.stdout.write('Messages scraped: 0');
+
   do {
 
     finalPromptArr = parseMessages(unparsedMessages, finalPromptArr)
-    console.log('Messages scraped: ' + finalPromptArr.length)
+
+    process.stdout.clearLine();
+    process.stdout.cursorTo(0);
+    process.stdout.write('Messages scraped: ' + finalPromptArr.length);
 
     before_id = unparsedMessages[unparsedMessages.length - 1].id
 
@@ -20,7 +25,7 @@ async function getMessages() {
 
   } while(unparsedMessages)
 
-  console.log('Success! Here are your ' + finalPromptArr.length + ' prompts:')
+  console.log('\n\nSuccess! Here are your ' + finalPromptArr.length + ' prompts:')
   console.log(finalPromptArr)
 }
 
@@ -55,6 +60,6 @@ function parseMessages(unparsedMessages, finalPromptArr) {
   return finalPromptArr
 }
 
-console.log('Groupme Drawful Mod v1. By Michael Darr./n/n')
+console.log('\n\nGroupme Drawful Mod v1. By Michael Darr.\n\n')
 console.log('Beginning message scrape...')
 getMessages()
