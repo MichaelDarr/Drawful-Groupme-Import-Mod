@@ -26,7 +26,7 @@
    Just preceding this line will be a `group_id`. Copy this number, go back to your `.env` file, and replace `groupme-group-id-here` with the group id.
 
 
-6. Locate the install directory of Jackbox Party Pack by:
+6. Locate the install directory of Jackbox Party Pack:
    1. find the game in your steam library
    2. right click it
    3. select `properties`
