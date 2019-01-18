@@ -2,8 +2,6 @@
 
 ## Turn the entire contents of a group chat into a prompt set for Drawful 1
 
----
-
 ### Prerequisites
 
 1. [Node.js](https://nodejs.org/en/download/)
