@@ -27,12 +27,12 @@
 
 
 6. Locate the install directory of Jackbox Party Pack:
-   1. find the game in your steam library
-   2. right click it
-   3. select `properties`
-   4. select the `local files` tab
-   5. click on `browse local files`
-   6. click on the address bar of your the file explorer that just popped up and copy this address.
+   1. Find the game in your steam library
+   2. Right click it
+   3. Select `properties`
+   4. Select the `local files` tab
+   5. Click on `browse local files`
+   6. Click on the address bar of your the file explorer that just popped up and copy this address.
 
    Go back to your `.env` file. After `DRAWFUL_ASSET_BIN_PATH=`, there is a file path similar to what you just copied. Replace that with your file path.
 
