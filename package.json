@@ -4,8 +4,10 @@
   "description": "scrapes a groupme chat for messages and creates a file format compatable with drawful",
   "main": "index.js",
   "dependencies": {
+    "archiver": "^3.0.0",
     "axios": "^0.18.0",
     "dotenv": "^6.2.0",
+    "progress": "^2.0.3",
     "punycode": "^2.1.1",
     "unicode": "^11.0.1"
   },

@@ -2,8 +2,10 @@ require('dotenv').config()
 
 const axios           = require('axios')
     , punycode        = require('punycode')
+    , ProgressBar     = require('progress')
     , unicode         = require('unicode/category/So')
     , fs              = require('fs')
+    , archiver        = require('archiver')
     , {promisify}     = require('util')
     , writeFileAsync  = promisify(fs.writeFile)
 
@@ -13,7 +15,9 @@ async function main() {
 
   var drawfulEncodedObject = drawfulEncode(prompts)
 
-  writePromptsToFile(drawfulEncodedObject)
+  await writePromptsToFile(drawfulEncodedObject)
+
+  await zipFileContents()
 }
 
 async function getAllMessages() {
@@ -40,7 +44,7 @@ async function getAllMessages() {
 
   } while(unparsedMessages)
 
-  console.log('\nMessage scrape complete\n')
+  console.log('\nScraping complete\n')
 
   return finalPromptArr
 }
@@ -97,11 +101,45 @@ async function writePromptsToFile(drawfulEncodedObject) {
 
   try {
     await writeFileAsync(process.env.DRAWFUL_UNPACKED_ARCHIVE_PATH + '/games/Drawful/content/prompts.jet', JSON.stringify(drawfulEncodedObject, null, 0), 'utf-8')
-    console.log('Completed file writing process')
+    console.log('Completed file writing process\n')
   } catch {
     console.log('file write failed. Make sure you have an extracted copy of assets.bin in the "assets" folder')
     process.exit()
   }
+}
+
+async function zipFileContents() {
+
+  console.log('Compressing drawful data')
+
+  var bar = null
+
+  var output  = fs.createWriteStream(process.env.DRAWFUL_ASSET_BIN_PATH + '/assets.bin')
+    , archive = archiver('zip')
+
+  output.on('close', function () {
+      console.log('Compression finished');
+  });
+
+  archive.on('error', function(err){
+      throw err
+  });
+
+  archive.on('progress', function(data) {
+    if(bar == null) {
+      var bar = new ProgressBar(' compressing [:bar] :percent', {
+        complete: '=',
+        incomplete: ' ',
+        width: 20,
+        total: data.fs.totalBytes
+      });
+    }
+    bar.tick(data.fs.processedBytes);
+  })
+
+  archive.pipe(output)
+  archive.directory(process.env.DRAWFUL_UNPACKED_ARCHIVE_PATH, false)
+  archive.finalize()
 }
 
 console.log('\x1b[35m', '\n\nGroupme Drawful Mod v1, by Michael Darr.\n')
