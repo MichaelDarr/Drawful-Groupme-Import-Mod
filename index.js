@@ -19,6 +19,8 @@ async function main() {
 
   await writePromptsToFile(drawfulEncodedObject)
 
+  await createPromptDataFiles(drawfulEncodedObject)
+
   await zipFileContents()
 }
 
@@ -111,10 +113,39 @@ async function writePromptsToFile(drawfulEncodedObject) {
   try {
     await writeFileAsync(process.env.DRAWFUL_UNPACKED_ARCHIVE_PATH + '/games/Drawful/content/prompts.jet', JSON.stringify(drawfulEncodedObject, null, 0), 'utf-8')
     console.log('Completed file writing process\n')
-  } catch {
+  } catch(error) {
+    console.log(error)
     console.log('file write failed. Make sure you have an extracted copy of assets.bin in the "assets" folder')
     process.exit()
   }
+}
+
+// drawful looks for data for each prompt by id. Let's go ahead and create all that
+async function createPromptDataFiles(drawfulEncodedObject) {
+
+  console.log('Creating prompt data')
+
+  var prompts = drawfulEncodedObject.items
+
+  await  Promise.all(prompts.map(async prompt => {
+    try {
+
+      var dataToWrite   = '{"fields":[{"v":"false","t":"B","n":"HasJokeAudio"},{"v":"","t":"S","n":"AlternateSpellings"},{"v":"' + JSON.stringify(prompt.text) + '","t":"S","n":"QuestionText"},{"t":"A","n":"JokeAudio"}]}'
+        , fileDirectory = process.env.DRAWFUL_UNPACKED_ARCHIVE_PATH + '/games/Drawful/content/prompts/' + prompt.id
+
+        if (!fs.existsSync(fileDirectory)){
+          fs.mkdirSync(fileDirectory);
+        }
+
+      await writeFileAsync(fileDirectory + '/data.jet', dataToWrite, 'utf-8')
+    } catch {
+      console.log('file write failed. Make sure you have an extracted copy of assets.bin in the "assets" folder')
+      process.exit()
+    }
+  }))
+
+  console.log('Completed prompt data creation\n')
+
 }
 
 // compress the jackbox data with your new prompts and move it to the asset directory
