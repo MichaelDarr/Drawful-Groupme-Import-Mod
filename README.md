@@ -17,11 +17,11 @@
 4. [Go to the groupme dev panel](https://dev.groupme.com/) and click on "Access Token" in the upper right hand corner. Replace `groupme-access-token-here` in your new `.env` file with the bolded sequence of letters and numbers it gives you.
 5. You now need your group id. In your browser, copy this into the url bar:
 
-   https://api.groupme.com/v3/groups?token=
+   `https://api.groupme.com/v3/groups?token=`
 
    Then, at the end (after `?token=`), paste in your access token from step 4. Press enter and you should see a whole bunch of data. Look through it to find a block of data with:
 
-   "name": "the group you want to make drawful prompts out of",
+   `"name": "the group you want to make drawful prompts out of"`
 
    Just preceding this line will be a `group_id`. Copy this number, go back to your `.env` file, and replace `groupme-group-id-here` with the group id.
 
@@ -43,7 +43,7 @@
     4. Go to the empty directory you just selected. Now, there should be a file called `assets.bin` there. This is a modified version of the original that exactly mirrors a zip file. As such, rename it `assets.zip`. Windows will warn you it might become unusable - ignore this and go full steam ahead.
     5. Extract this zip to **an empty directory**. Go to this directory and make sure that it has three subfolders (games, music, and sfx) as well as a few other .swf files and a .txt file. Copy the location of this directory.
     
-   Go back to your `.env` file. After `DRAWFUL_UNPACKED_ARCHIVE_PATH=`, replace `C:\drawful-assets` with the path you copied in step 7.5. We're finally done here - save and close the `.env` file.
+   Go back to your `.env` file. After `DRAWFUL_UNPACKED_ARCHIVE_PATH=`, replace `C:\drawful-assets` with the path you copied in step 7.v. We're finally done here - save and close the `.env` file.
 
 8. Now that we've done all the setup, we need to run the program. Go back to the command line from step 2. Make sure you are in the directory where you cloned this repo. Run the command `npm start` and you should see some progress text that ultimately culminates in a message of "Modification successful!"
 
