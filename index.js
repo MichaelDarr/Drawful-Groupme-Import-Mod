@@ -130,14 +130,33 @@ async function createPromptDataFiles(drawfulEncodedObject) {
   await  Promise.all(prompts.map(async prompt => {
     try {
 
-      var dataToWrite   = '{"fields":[{"v":"false","t":"B","n":"HasJokeAudio"},{"v":"","t":"S","n":"AlternateSpellings"},{"v":"' + JSON.stringify(prompt.text) + '","t":"S","n":"QuestionText"},{"t":"A","n":"JokeAudio"}]}'
-        , fileDirectory = process.env.DRAWFUL_UNPACKED_ARCHIVE_PATH + '/games/Drawful/content/prompts/' + prompt.id
+      var fileDirectory = process.env.DRAWFUL_UNPACKED_ARCHIVE_PATH + '/games/Drawful/content/prompts/' + prompt.id
 
-        if (!fs.existsSync(fileDirectory)){
-          fs.mkdirSync(fileDirectory);
+      if (!fs.existsSync(fileDirectory)){
+        fs.mkdirSync(fileDirectory);
+      }
+
+      var dataToWrite =
+        { fields:
+          [ { v: "false"
+            , t: "B"
+            , n: "HasJokeAudio"
+            }
+          , { v: ""
+            , t: "S"
+            , n: "AlternateSpellings"
+            }
+          , { v: prompt.text
+            , t: "S"
+            , n: "QuestionText"
+            }
+          , { t: "A"
+            , n: "JokeAudio"
+            }
+          ]
         }
 
-      await writeFileAsync(fileDirectory + '/data.jet', dataToWrite, 'utf-8')
+      await writeFileAsync(fileDirectory + '/data.jet', JSON.stringify(dataToWrite, null, 0), 'utf-8')
     } catch {
       console.log('file write failed. Make sure you have an extracted copy of assets.bin in the "assets" folder')
       process.exit()
