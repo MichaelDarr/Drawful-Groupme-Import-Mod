@@ -11,6 +11,9 @@ const axios           = require('axios')
 
 async function main() {
 
+  console.log('\x1b[35m', '\n\nDrawful Groupme Import Mod, by Michael Darr.\n')
+  console.log('\x1b[0m')
+
   var prompts = await getAllMessages()
 
   var drawfulEncodedObject = drawfulEncode(prompts)
@@ -20,6 +23,7 @@ async function main() {
   await zipFileContents()
 }
 
+// retrieves messages from groupme via API
 async function getAllMessages() {
 
   console.log('Beginning message scrape')
@@ -30,6 +34,7 @@ async function getAllMessages() {
 
   process.stdout.write('Messages scraped: 0');
 
+  // keep requesting the next batch of messages until you receive an empty page
   do {
 
     parseMessages(unparsedMessages, finalPromptArr)
@@ -49,6 +54,7 @@ async function getAllMessages() {
   return finalPromptArr
 }
 
+// manages API requests based on groupme's pagination system of "before_id"s
 async function makeMessageRequest(before_id) {
 
   var requestURL            = 'https://api.groupme.com/v3/groups/' + process.env.GROUPME_GROUP_ID + '/messages'
@@ -69,15 +75,18 @@ async function makeMessageRequest(before_id) {
 
 }
 
+// takes the message objects, extracts messages, strips spaces, and checks for duplicates
 function parseMessages(unparsedMessages, finalPromptArr) {
 
   for(var i = 0; i < unparsedMessages.length - 1; i++) {
-    if(finalPromptArr.indexOf(unparsedMessages[i].text) > -1) continue
+    var promptToInsert = unparsedMessages[i].text.trim()
+    if(finalPromptArr.indexOf(promptToInsert) > -1) continue
 
-    finalPromptArr.push(unparsedMessages[i].text)
+    finalPromptArr.push(promptToInsert)
   }
 }
 
+// reformats the prompt array into an object laid out like drawful's
 function drawfulEncode(prompts) {
   var drawfulEncodedObject =
     { episodeid : 1209
@@ -95,6 +104,7 @@ function drawfulEncode(prompts) {
   return drawfulEncodedObject
 }
 
+// simple object to JSON in a text file (.jet is jackbox's extension for this stuff)
 async function writePromptsToFile(drawfulEncodedObject) {
 
   console.log('Writing new prompts to Drawful data file')
@@ -108,9 +118,10 @@ async function writePromptsToFile(drawfulEncodedObject) {
   }
 }
 
+// compress the jackbox data with your new prompts and move it to the asset directory
 async function zipFileContents() {
 
-  console.log('Compressing drawful data')
+  console.log('Compressing and injecting Drawful data')
 
   var bar = null
 
@@ -119,6 +130,10 @@ async function zipFileContents() {
 
   output.on('close', function () {
       console.log('Compression finished');
+      console.log('Files injected into Jackbox Party Pack');
+
+      console.log('\x1b[35m', '\n\nModification successful!\n')
+      console.log('\x1b[0m')
   });
 
   archive.on('error', function(err){
@@ -142,6 +157,4 @@ async function zipFileContents() {
   archive.finalize()
 }
 
-console.log('\x1b[35m', '\n\nGroupme Drawful Mod v1, by Michael Darr.\n')
-console.log('\x1b[0m')
 main()
