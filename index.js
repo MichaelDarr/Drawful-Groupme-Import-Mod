@@ -80,10 +80,28 @@ async function makeMessageRequest(before_id) {
 function parseMessages(unparsedMessages, finalPromptArr) {
 
   for(var i = 0; i < unparsedMessages.length - 1; i++) {
-    var promptToInsert = unparsedMessages[i].text.trim()
-    if(finalPromptArr.indexOf(promptToInsert) > -1) continue
 
-    finalPromptArr.push(promptToInsert)
+    var promptToInsert = unparsedMessages[i].text.trim()
+
+    var isLeftbracket = true;
+    var stringBuilder = ''
+    for(var k = 0; k < promptToInsert.length; k++) {
+      var charToReplace = promptToInsert.charAt(k)
+      if(charToReplace == "'") {
+        stringBuilder += '\u2019'
+        continue
+      }
+      else if(charToReplace == '"') {
+        stringBuilder += (isLeftbracket) ? '\u201c' : '\u201d'
+        isLeftbracket = !isLeftbracket
+        continue
+      }
+      stringBuilder += charToReplace
+    }
+
+    if(finalPromptArr.indexOf(stringBuilder) > -1) continue
+
+    finalPromptArr.push(stringBuilder)
   }
 }
 
