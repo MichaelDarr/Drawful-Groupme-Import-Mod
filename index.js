@@ -15,6 +15,8 @@ async function main() {
 
   var prompts = await getAllMessages()
 
+  shuffle(prompts)
+
   var drawfulEncodedObject = drawfulEncode(prompts)
 
   await writePromptsToFile(drawfulEncodedObject)
@@ -92,9 +94,10 @@ function parseMessages(unparsedMessages, finalPromptArr) {
         continue
       }
       else if(charToReplace == '"') {
-        stringBuilder += (isLeftbracket) ? '\u201c' : '\u201d'
+        // remove all quotes
+        /*stringBuilder += (isLeftbracket) ? '\u201c' : '\u201d'
         isLeftbracket = !isLeftbracket
-        continue
+        continue*/
       }
       stringBuilder += charToReplace
     }
@@ -103,6 +106,11 @@ function parseMessages(unparsedMessages, finalPromptArr) {
 
     finalPromptArr.push(stringBuilder)
   }
+}
+
+// shuffles array - we don't actually know how drawful handles randomness, so we throw in some
+function randomizePrompts(prompts) {
+  console.log
 }
 
 // reformats the prompt array into an object laid out like drawful's
@@ -222,6 +230,20 @@ async function zipFileContents() {
   archive.pipe(output)
   archive.directory(process.env.DRAWFUL_UNPACKED_ARCHIVE_PATH, false)
   archive.finalize()
+}
+
+/**
+ * Shuffles array in place. ES6 version
+ * @param {Array} a items An array containing the items.
+ *
+ * source: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+ */
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
 }
 
 main()
